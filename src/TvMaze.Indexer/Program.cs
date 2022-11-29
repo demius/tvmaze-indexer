@@ -10,7 +10,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddSingleton<ITvMazeClient, TvMazeHttpClient>();
         services.AddHostedService<Worker>();
-        services.AddDbContext<TvMazeIndexContext>(
+        services.AddDbContext<TvMazeDataContext>(
             options => options
                 .UseSqlite("name=ConnectionStrings:TvMazeCache")
                 .UseSnakeCaseNamingConvention());

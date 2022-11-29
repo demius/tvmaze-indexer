@@ -9,10 +9,10 @@ namespace TvMaze.Data.Model
         public int ShowId { get; set; }
         
         [Required, MaxLength(255)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required]
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         [Required]
         public uint LastUpdated { get; set; }

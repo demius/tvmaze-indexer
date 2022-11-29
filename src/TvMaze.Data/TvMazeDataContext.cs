@@ -3,9 +3,9 @@ using TvMaze.Data.Model;
 
 namespace TvMaze.Data;
 
-public class TvMazeIndexContext : DbContext
+public class TvMazeDataContext : DbContext
 {
-    public TvMazeIndexContext(DbContextOptions<TvMazeIndexContext> options)
+    public TvMazeDataContext(DbContextOptions<TvMazeDataContext> options)
         : base(options)
     {
     }

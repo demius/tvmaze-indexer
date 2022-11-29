@@ -9,7 +9,7 @@ using TvMaze.Data;
 
 namespace TvMaze.Data.Migrations
 {
-    [DbContext(typeof(TvMazeIndexContext))]
+    [DbContext(typeof(TvMazeDataContext))]
     [Migration("20221129192508_InitialCreate")]
     partial class InitialCreate
     {

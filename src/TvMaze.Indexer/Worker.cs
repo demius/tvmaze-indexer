@@ -22,7 +22,7 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var resolutionScope = _serviceScopeFactory.CreateScope();
-        await using var dbContext = resolutionScope.ServiceProvider.GetService<TvMazeIndexContext>();
+        await using var dbContext = resolutionScope.ServiceProvider.GetService<TvMazeDataContext>();
         await dbContext.Database.MigrateAsync(stoppingToken);
 
         var page = 0;

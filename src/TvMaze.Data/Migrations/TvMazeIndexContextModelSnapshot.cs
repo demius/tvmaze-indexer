@@ -8,7 +8,7 @@ using TvMaze.Data;
 
 namespace TvMaze.Data.Migrations
 {
-    [DbContext(typeof(TvMazeIndexContext))]
+    [DbContext(typeof(TvMazeDataContext))]
     partial class TvMazeIndexContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
