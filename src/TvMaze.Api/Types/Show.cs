@@ -20,7 +20,7 @@ public class Show
     
     public string? Language { get; set; }
     
-    public ShowStatus Status { get; set; }
+    public string? Status { get; set; }
     
     public string[] Genres { get; set; }
     

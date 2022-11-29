@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TvMaze.Api;
+using TvMaze.Api.Types;
 using TvMaze.Data;
+using ShowEntity = TvMaze.Data.Model.Show;
 
 namespace TvMaze.Indexer;
 
@@ -23,13 +25,42 @@ public class Worker : BackgroundService
         await using var dbContext = resolutionScope.ServiceProvider.GetService<TvMazeIndexContext>();
         await dbContext.Database.MigrateAsync(stoppingToken);
 
-        // var offset = 0;
+        var page = 0;
+        PagedShowResponse nextResponse;
         
-        // while (!stoppingToken.IsCancellationRequested && offset < 2400)
-        // {
-        //     var shows = await _apiClient.GetShows(offset, stoppingToken);
-        //     
-        //     offset = shows.Max(_ => _.Id);
-        // }
+        do
+        {
+            nextResponse = await _apiClient.GetShows(page, stoppingToken);
+
+            if (nextResponse.IsEmpty)
+                break;
+            
+            _logger.LogInformation("{Count} show(s) retrieved with index range {Min}-{Max}",
+                nextResponse.Count, nextResponse.Items.Min(_ => _.Id), nextResponse.Items.Max(_ => _.Id));
+
+            var mapped = nextResponse.Items.Select(Transform);
+            
+            foreach (var show in mapped)
+            {
+                _logger.LogInformation("Adding/Updating show {Id}: {Name}", show.ShowId, show.Name);
+
+                await dbContext.Shows.AddAsync(show, stoppingToken);
+            }
+            
+            await dbContext.SaveChangesAsync(stoppingToken);
+            
+            page++;
+        } while (!stoppingToken.IsCancellationRequested && nextResponse.MoreAvailable);
+    }
+
+    private static ShowEntity Transform(Show show)
+    {
+        return new ShowEntity
+        {
+            ShowId = show.Id,
+            Name = show.Name,
+            Url = show.Url,
+            LastUpdated = show.Updated
+        };
     }
 }

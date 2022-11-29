@@ -3,6 +3,8 @@ using TvMaze.Api;
 using TvMaze.Data;
 using TvMaze.Indexer;
 
+
+
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {

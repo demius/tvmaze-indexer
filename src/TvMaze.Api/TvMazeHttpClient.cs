@@ -1,5 +1,7 @@
+using System.Net;
 using Flurl;
 using Flurl.Http;
+using Polly;
 using TvMaze.Api.Types;
 
 namespace TvMaze.Api;
@@ -9,6 +11,12 @@ public class TvMazeHttpClient : ITvMazeClient
 {
     private const string DEFAULT_BASE_URL = "https://api.tvmaze.com";
 
+    /// <summary>
+    /// Creates a new TV Maze API client instance
+    /// </summary>
+    /// <param name="apiBaseUrl">Optionally specifies the absolute TV Maze API base URL</param>
+    /// <exception cref="ArgumentNullException">Raised if the provided base URL is null or empty</exception>
+    /// <exception cref="UriFormatException">Raised when the base URL is a malformed or relative URI</exception>
     public TvMazeHttpClient(string apiBaseUrl = DEFAULT_BASE_URL)
     {
         if (string.IsNullOrWhiteSpace(apiBaseUrl))
@@ -32,14 +40,44 @@ public class TvMazeHttpClient : ITvMazeClient
     }
 
     /// <inheritdoc cref="ITvMazeClient"/>
-    public async Task<IEnumerable<Show>> GetShows(int offset = 0, CancellationToken cancellationToken = default)
+    public async Task<PagedShowResponse> GetShows(int page = 0, CancellationToken cancellationToken = default)
     {
-        var page = Math.Floor(offset + 1 / 240d);
-        var response = await DEFAULT_BASE_URL
+        var policy = BuildRetryPolicy();
+        
+        var response = await policy.ExecuteAsync(() => DEFAULT_BASE_URL
             .AppendPathSegment("shows")
             .SetQueryParam("page", page)
-            .GetAsync(cancellationToken);
+            .AllowHttpStatus("404")
+            .GetAsync(cancellationToken));
 
-        return await response.GetJsonAsync<IList<Show>>();
+        if(response.StatusCode == 404)
+            return PagedShowResponse.Empty(page);
+
+        var shows = await response.GetJsonAsync<Show[]>();
+        return new PagedShowResponse(page, shows)
+        {
+            MoreAvailable = shows.Length > 0
+        };
+    }
+    
+    private static AsyncPolicy BuildRetryPolicy()
+    {
+        return Policy
+            .Handle<FlurlHttpException>(IsTransientFault)
+            .WaitAndRetryAsync(5, attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+
+        bool IsTransientFault(FlurlHttpException ex)
+        {
+            int[] worthRetrying =
+            {
+                (int)HttpStatusCode.RequestTimeout,
+                (int)HttpStatusCode.TooManyRequests,
+                (int)HttpStatusCode.BadGateway,
+                (int)HttpStatusCode.ServiceUnavailable,
+                (int)HttpStatusCode.GatewayTimeout
+            };
+            
+            return ex.StatusCode.HasValue && worthRetrying.Contains(ex.StatusCode.Value);
+        }
     }
 }

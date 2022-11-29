@@ -18,9 +18,9 @@ public interface ITvMazeClient
     /// <summary>
     /// Retrieves a paginated list of shows from TVMaze
     /// </summary>
-    /// <param name="offset">The zero-based offset for the next set of results</param>
+    /// <param name="page">The zero-based page index to retrieve</param>
     /// <param name="cancellationToken"></param>
     /// <returns>A collection of shows and their associated metadata</returns>
     /// <remarks>The TVMaze API currently limits the set to 250 results per page</remarks>
-    Task<IEnumerable<Show>> GetShows(int offset = 0, CancellationToken cancellationToken = default);
+    Task<PagedShowResponse> GetShows(int page, CancellationToken cancellationToken = default);
 }

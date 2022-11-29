@@ -622,6 +622,10 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# sqlite
+*.db
+*.db-*
+
 # JetBrains Rider
 
 ### VisualStudio Patch ###
