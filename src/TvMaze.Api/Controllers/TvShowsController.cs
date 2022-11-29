@@ -25,7 +25,7 @@ public class TvShowsController : ControllerBase
         var entity = await _dbContext.Shows.FindAsync(id);
         if (entity == null) return NotFound();
 
-        return Ok(new TvShow
+        return Ok(new TvShowDto
         {
             Id = id,
             Name = entity.Name

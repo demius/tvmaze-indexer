@@ -1,6 +1,6 @@
 namespace TvMaze.Api.ResponseTypes;
 
-public class TvShow
+public class TvShowDto
 {
     public int Id { get; set; }
     
