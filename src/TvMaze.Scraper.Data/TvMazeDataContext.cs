@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TvMaze.Data.Model;
+using TvMaze.Scraper.Data.Model;
 
-namespace TvMaze.Data;
+namespace TvMaze.Scraper.Data;
 
 public class TvMazeDataContext : DbContext
 {
@@ -10,5 +10,7 @@ public class TvMazeDataContext : DbContext
     {
     }
     
-    public DbSet<Show> Shows { get; set; }
+    public DbSet<TvShow> TvShows { get; set; }
+    
+    public DbSet<Person> People { get; set; }
 }

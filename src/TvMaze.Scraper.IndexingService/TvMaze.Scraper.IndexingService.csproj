@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-TvMaze.Indexer-A1928F4F-32FE-4D85-8367-358BB3B88170</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>TvMaze.Indexer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,6 +20,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TvMaze.Client\TvMaze.Client.csproj" />
-      <ProjectReference Include="..\TvMaze.Data\TvMaze.Data.csproj" />
+      <ProjectReference Include="..\TvMaze.Scraper.Data\TvMaze.Scraper.Data.csproj" />
     </ItemGroup>
 </Project>

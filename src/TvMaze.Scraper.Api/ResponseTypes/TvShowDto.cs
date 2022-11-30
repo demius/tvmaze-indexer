@@ -1,4 +1,4 @@
-namespace TvMaze.Api.ResponseTypes;
+namespace TvMaze.Scraper.Api.ResponseTypes;
 
 public class TvShowDto
 {

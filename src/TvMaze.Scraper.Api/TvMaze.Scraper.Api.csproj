@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TvMaze.Data\TvMaze.Data.csproj" />
+      <ProjectReference Include="..\TvMaze.Scraper.Data\TvMaze.Scraper.Data.csproj" />
     </ItemGroup>
 
 </Project>

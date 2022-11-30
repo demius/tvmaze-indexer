@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TvMaze.Api;
 using TvMaze.Api.Types;
-using TvMaze.Data;
-using ShowEntity = TvMaze.Data.Model.Show;
+using TvMaze.Scraper.Data;
+using TvMaze.Scraper.Data.Model;
 
 namespace TvMaze.Indexer;
 
@@ -23,6 +23,7 @@ public class Worker : BackgroundService
     {
         using var resolutionScope = _serviceScopeFactory.CreateScope();
         await using var dbContext = resolutionScope.ServiceProvider.GetService<TvMazeDataContext>();
+        
         await dbContext.Database.MigrateAsync(stoppingToken);
 
         var page = 0;
@@ -42,9 +43,9 @@ public class Worker : BackgroundService
             
             foreach (var show in mapped)
             {
-                _logger.LogInformation("Adding/Updating show {Id}: {Name}", show.ShowId, show.Name);
+                _logger.LogInformation("Adding/Updating show {Id}: {Name}", show.TvShowId, show.Name);
 
-                await dbContext.Shows.AddAsync(show, stoppingToken);
+                await dbContext.TvShows.AddAsync(show, stoppingToken);
             }
             
             await dbContext.SaveChangesAsync(stoppingToken);
@@ -53,11 +54,11 @@ public class Worker : BackgroundService
         } while (!stoppingToken.IsCancellationRequested && nextResponse.MoreAvailable);
     }
 
-    private static ShowEntity Transform(Show show)
+    private static TvShow Transform(Show show)
     {
-        return new ShowEntity
+        return new TvShow
         {
-            ShowId = show.Id,
+            TvShowId = show.Id,
             Name = show.Name,
             Url = show.Url,
             LastUpdated = show.Updated

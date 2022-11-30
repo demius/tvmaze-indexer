@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TvMaze.Api;
-using TvMaze.Data;
+using TvMaze.Scraper.Data;
 using TvMaze.Indexer;
 
 

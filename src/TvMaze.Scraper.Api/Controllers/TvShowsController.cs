@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using TvMaze.Api.ResponseTypes;
-using TvMaze.Data;
+using TvMaze.Scraper.Api.ResponseTypes;
+using TvMaze.Scraper.Data;
 
-namespace TvMaze.Api.Controllers;
+namespace TvMaze.Scraper.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -22,7 +22,7 @@ public class TvShowsController : ControllerBase
     {
         if (id <= 0) return BadRequest();
         
-        var entity = await _dbContext.Shows.FindAsync(id);
+        var entity = await _dbContext.TvShows.FindAsync(id);
         if (entity == null) return NotFound();
 
         return Ok(new TvShowDto

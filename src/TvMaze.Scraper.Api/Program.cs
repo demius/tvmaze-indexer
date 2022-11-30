@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TvMaze.Data;
+using TvMaze.Scraper.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
