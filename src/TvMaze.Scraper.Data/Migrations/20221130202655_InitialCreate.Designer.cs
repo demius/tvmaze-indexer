@@ -11,7 +11,7 @@ using TvMaze.Scraper.Data;
 namespace TvMaze.Scraper.Data.Migrations
 {
     [DbContext(typeof(TvMazeDataContext))]
-    [Migration("20221130180952_InitialCreate")]
+    [Migration("20221130202655_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -46,7 +46,7 @@ namespace TvMaze.Scraper.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("person_id");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("TEXT")
                         .HasColumnName("birthday");
 

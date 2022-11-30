@@ -13,7 +13,7 @@ public interface ITvMazeClient
     /// </summary>
     /// <param name="showId">The unique TVMaze show identifier</param>
     /// <returns>A collection of cast members</returns>
-    Task<IEnumerable<CastMember>> GetCast(int showId);
+    ValueTask<IEnumerable<CastMember>> GetCast(int showId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves a paginated list of shows from TVMaze
@@ -22,5 +22,5 @@ public interface ITvMazeClient
     /// <param name="cancellationToken"></param>
     /// <returns>A collection of shows and their associated metadata</returns>
     /// <remarks>The TVMaze API currently limits the set to 250 results per page</remarks>
-    Task<PagedShowResponse> GetShows(int page, CancellationToken cancellationToken = default);
+    ValueTask<PagedShowResponse> GetShows(int page, CancellationToken cancellationToken = default);
 }

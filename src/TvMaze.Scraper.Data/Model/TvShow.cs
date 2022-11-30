@@ -5,6 +5,11 @@ namespace TvMaze.Scraper.Data.Model
 {
     public class TvShow
     {
+        public TvShow()
+        {
+            CastMembers = new HashSet<Person>();
+        }
+        
         public int TvShowId { get; set; }
         
         public string Name { get; set; }

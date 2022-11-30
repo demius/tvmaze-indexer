@@ -5,13 +5,18 @@ namespace TvMaze.Scraper.Data.Model;
 
 public class Person
 {
+    public Person()
+    {
+        TvShows = new HashSet<TvShow>();
+    }
+    
     public int PersonId { get; set; }
     
     public string Url { get; set; }
     
     public string Name { get; set; }
     
-    public DateTime Birthday { get; set; }
+    public DateTime? Birthday { get; set; }
 
     public uint LastUpdated { get; set; }
     

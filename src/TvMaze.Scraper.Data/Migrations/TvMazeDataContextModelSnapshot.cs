@@ -43,7 +43,7 @@ namespace TvMaze.Scraper.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("person_id");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("TEXT")
                         .HasColumnName("birthday");
 

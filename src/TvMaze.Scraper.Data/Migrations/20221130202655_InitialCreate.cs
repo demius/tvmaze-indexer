@@ -19,7 +19,7 @@ namespace TvMaze.Scraper.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     url = table.Column<string>(type: "TEXT", nullable: false),
                     name = table.Column<string>(type: "TEXT", nullable: false),
-                    birthday = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    birthday = table.Column<DateTime>(type: "TEXT", nullable: true),
                     lastupdated = table.Column<uint>(name: "last_updated", type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
