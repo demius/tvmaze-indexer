@@ -2,9 +2,9 @@ using System.Net;
 using Flurl;
 using Flurl.Http;
 using Polly;
-using TvMaze.Api.Types;
+using TvMaze.Client.Types;
 
-namespace TvMaze.Api;
+namespace TvMaze.Client;
 
 /// <inheritdoc cref="ITvMazeClient"/>
 public class TvMazeHttpClient : ITvMazeClient

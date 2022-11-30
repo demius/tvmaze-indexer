@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using TvMaze.Api;
-using TvMaze.Api.Types;
+using TvMaze.Client;
+using TvMaze.Client.Types;
 using TvMaze.Indexer.Processing;
 using TvMaze.Indexer.Processing.Commands;
 using TvMaze.Scraper.Data;

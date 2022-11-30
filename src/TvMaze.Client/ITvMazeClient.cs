@@ -1,7 +1,6 @@
-﻿namespace TvMaze.Api;
+﻿using TvMaze.Client.Types;
 
-using System.Threading;
-using TvMaze.Api.Types;
+namespace TvMaze.Client;
 
 /// <summary>
 /// Represents a TVMaze API client

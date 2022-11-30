@@ -1,4 +1,4 @@
-namespace TvMaze.Api.Types;
+namespace TvMaze.Client.Types;
 
 public class Person
 {

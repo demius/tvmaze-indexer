@@ -1,6 +1,4 @@
-using System.Collections;
-
-namespace TvMaze.Api.Types;
+namespace TvMaze.Client.Types;
 
 public class PagedShowResponse
 {

@@ -1,4 +1,4 @@
-using TvMaze.Api;
+using TvMaze.Client;
 using TvMaze.Indexer.Exceptions;
 using TvMaze.Indexer.Processing.Commands;
 using TvMaze.Scraper.Data;
