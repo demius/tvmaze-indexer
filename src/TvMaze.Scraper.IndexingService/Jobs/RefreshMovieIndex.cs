@@ -3,7 +3,7 @@ using Quartz;
 using TvMaze.Client;
 using TvMaze.Client.Types;
 using TvMaze.Indexer.Processing;
-using TvMaze.Indexer.Processing.Commands;
+using TvMaze.Indexer.Processing.Tasks;
 using TvMaze.Scraper.Data;
 using TvMaze.Scraper.Data.Model;
 
@@ -55,16 +55,19 @@ public class RefreshMovieIndex : IJob
             _logger.LogInformation("{Count} show(s) retrieved with index range {Min}-{Max}",
                 nextResponse.Count, nextResponse.Items.Min(_ => _.Id), nextResponse.Items.Max(_ => _.Id));
 
+            // filter our working set to only include shows we've not yet indexed
             var mapped = nextResponse.Items
                 .Select(Transform)
                 .Where(_ => !existing.Contains(_.TvShowId))
                 .ToArray();
-
+            
             await _dbContext.TvShows.AddRangeAsync(mapped, context.CancellationToken);
             await _dbContext.SaveChangesAsync(context.CancellationToken);
 
             foreach (var show in mapped)
             {
+                // enqueue a command message (task) to enrich the show with cast information
+                // this could be extended to include crew and all manner of other metadata (with a fair amount of work naturally)
                 await _enrichmentQueue.EnqueueAsync(new FetchTvShowCastMembers { TvShowId = show.TvShowId });
             }
             page++;
@@ -74,6 +77,9 @@ public class RefreshMovieIndex : IJob
             context.NextFireTimeUtc);
     }
 
+    /// <summary>
+    /// Maps a show retrieved from TV Maze to a DB entity
+    /// </summary>
     private static TvShow Transform(Show show)
     {
         return new TvShow

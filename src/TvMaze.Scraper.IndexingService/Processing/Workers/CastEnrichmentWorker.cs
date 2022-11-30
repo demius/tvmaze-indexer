@@ -1,11 +1,14 @@
 using TvMaze.Client;
 using TvMaze.Indexer.Exceptions;
-using TvMaze.Indexer.Processing.Commands;
+using TvMaze.Indexer.Processing.Tasks;
 using TvMaze.Scraper.Data;
 using TvMaze.Scraper.Data.Model;
 
 namespace TvMaze.Indexer.Processing.Workers;
 
+/// <summary>
+/// A worker service responsible for processing cast enrichment tasks
+/// </summary>
 public class CastEnrichmentWorker
 {
     private readonly IWorkQueue _workQueue;
@@ -24,6 +27,9 @@ public class CastEnrichmentWorker
         _cancellationToken = applicationLifetime.ApplicationStopping;
     }
 
+    /// <summary>
+    /// Initializes the worker's task consumption loop
+    /// </summary>
     public void Start()
     {
         Task.Run(async () => await MonitorAsync(), _cancellationToken);
@@ -40,6 +46,11 @@ public class CastEnrichmentWorker
                     continue;
 
                 var cast = await _apiClient.GetCast(task.TvShowId, _cancellationToken);
+                if (!cast.Any())
+                {
+                    _logger.LogInformation("No cast members are listed for TV Show {Id}", task.TvShowId);
+                    continue;
+                }
                 
                 using var resolutionScope = _scopeFactory.CreateScope();
                 await using var dbContext = resolutionScope.ServiceProvider.GetService<TvMazeDataContext>();
@@ -55,18 +66,11 @@ public class CastEnrichmentWorker
                     {
                         if (!existingPersonEntity.TvShows.Contains(show))
                             existingPersonEntity.TvShows.Add(show);
+                        
                         continue;
                     }
 
-                    var person = new Person
-                    {
-                        PersonId = member.Person.Id,
-                        Name = member.Person.Name,
-                        Birthday = member.Person.Birthday,
-                        Url = member.Person.Url,
-                        LastUpdated = member.Person.Updated,
-                        TvShows = { show }
-                    };
+                    var person = Map(member, show);
 
                     await dbContext.People.AddAsync(person, _cancellationToken);
                 }
@@ -84,5 +88,21 @@ public class CastEnrichmentWorker
                 _logger.LogError(ex, "Failed to fetch/persist cast members");
             }
         }
+    }
+
+    /// <summary>
+    /// Maps a TV Maze cast member to a new database entity
+    /// </summary>
+    private static Person Map(TvMaze.Client.Types.CastMember castMember, TvShow show)
+    {
+        return new Person
+        {
+            PersonId = castMember.Person.Id,
+            Name = castMember.Person.Name,
+            Birthday = castMember.Person.Birthday,
+            Url = castMember.Person.Url,
+            LastUpdated = castMember.Person.Updated,
+            TvShows = { show }
+        };
     }
 }
