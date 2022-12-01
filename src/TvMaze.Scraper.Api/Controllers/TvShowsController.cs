@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TvMaze.Scraper.Api.ResponseTypes;
 using TvMaze.Scraper.Data;
+using TvMaze.Scraper.Data.Extensions;
 using TvMaze.Scraper.Data.Model;
 
 namespace TvMaze.Scraper.Api.Controllers;
@@ -24,20 +25,24 @@ public class TvShowsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TvShowDto[]))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Search(int query, int pageSize = 20, int page = 1)
+    public async Task<IActionResult> Search(int searchQuery, int pageSize = 20, int page = 1)
     {
-        var searchResults = await _dbContext.TvShows
-            .Include(_ => _.CastMembers)
-            .Where(_ => _.TvShowId.ToString().Contains(query.ToString()))
-            .OrderBy(_ => _.TvShowId)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        if (pageSize <= 0)
+            pageSize = 20;
 
-        if (!searchResults.Any())
-            return NotFound();
+        page = Math.Max(page, 1);
         
-        var mapped = searchResults.Select(Map);
+        var resultSet = await _dbContext.TvShows
+            .Include(_ => _.CastMembers)
+            .Where(_ => _.TvShowId.ToString().Contains(searchQuery.ToString()))
+            .OrderBy(_ => _.TvShowId)
+            .AsPagedResultAsync(page, pageSize);
+        
+        HttpContext.Response.Headers.Add("x-tvm-page", page.ToString());
+        HttpContext.Response.Headers.Add("x-tvm-page-size", pageSize.ToString());
+        HttpContext.Response.Headers.Add("x-tvm-page-count", resultSet.PageCount.ToString());
+        
+        var mapped = resultSet.Results.Select(Map);
 
         return Ok(mapped);
     }
