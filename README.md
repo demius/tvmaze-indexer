@@ -31,7 +31,9 @@ Here's a list of (some) things I didn't get around to:
 
 - [ ] Unit-tests
 - [ ] Splitting enrichment workers into a separate application
-- [ ] Competing consumers (task workers)
+- [ ] Worker parallelism (multiple worker instances as competing consumers)
+- [ ] (Much) Better exception handling
+- [ ] Better API error reporting (e.g. RFC7807)
 - [ ] Character information enrichment
 - [ ] Docker support
 
